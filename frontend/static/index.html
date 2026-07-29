@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyelid Cancer Detection System</title>
+    <meta name="description"
+        content="AI-powered eyelid cancer classification using CNN and Vision Transformer prototypes.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <div class="bg-particles" id="bgParticles"></div>
+
+    <header>
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="24" cy="24" r="22" stroke="url(#grad1)" stroke-width="2.5" fill="none" />
+                        <ellipse cx="24" cy="24" rx="14" ry="9" stroke="url(#grad1)" stroke-width="2" fill="none" />
+                        <circle cx="24" cy="24" r="5" fill="url(#grad1)" />
+                        <defs>
+                            <linearGradient id="grad1" x1="0" y1="0" x2="48" y2="48">
+                                <stop offset="0%" stop-color="#6ee7b7" />
+                                <stop offset="100%" stop-color="#3b82f6" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div>
+                    <h1>Eyelid Cancer Detection</h1>
+                </div>
+            </div>
+            <div class="badge">
+                <span class="badge-dot"></span>
+                AI Models Active
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+
+            <!-- ===== PAGE 0: Landing ===== -->
+            <section class="landing-section" id="landingSection">
+                <div class="landing-header">
+                    <h2 class="landing-title">Select a Detection Prototype</h2>
+                    <p class="landing-subtitle">Upload eyelid lesion images to classify as benign or malignant using AI</p>
+                </div>
+
+                <div class="prototype-grid">
+
+                    <div class="prototype-card">
+                        <div class="proto-tag proto-tag--a">Prototype A</div>
+                        <h3 class="proto-title">Dual CNN Analysis</h3>
+                        <p class="proto-desc">Both CNN systems run simultaneously on your images, providing independent assessments from two complementary architectures with Grad-CAM visualisation.</p>
+                        <ul class="proto-models-list">
+                            <li class="proto-model-item">
+                                <span class="proto-dot proto-dot--jay"></span>
+                                <span>Jay&rsquo;s Tumour Locator CNN <span class="model-arch">(ResNet-18)</span></span>
+                            </li>
+                            <li class="proto-model-item">
+                                <span class="proto-dot proto-dot--mark"></span>
+                                <span>Mark&rsquo;s Periocular Analysis CNN <span class="model-arch">(ResNet-152)</span></span>
+                            </li>
+                        </ul>
+                        <button class="proto-select-btn proto-select-btn--a" id="protoABtn">
+                            Launch Prototype A
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="prototype-card">
+                        <div class="proto-tag proto-tag--b">Prototype B</div>
+                        <h3 class="proto-title">Periocular Transformer</h3>
+                        <p class="proto-desc">A Vision Transformer pretrained via Masked Autoencoding on periocular anatomy, then fine-tuned for cancer classification with GMAR attention visualisation. Runs a baseline model alongside an iris-masked variant that removes iris/pupil bias for comparison.</p>
+                        <ul class="proto-models-list">
+                            <li class="proto-model-item">
+                                <span class="proto-dot proto-dot--aparna"></span>
+                                <span>Baseline Periocular Transformer <span class="model-arch">(ViT-B/16 + MAE)</span></span>
+                            </li>
+                            <li class="proto-model-item">
+                                <span class="proto-dot proto-dot--aparna"></span>
+                                <span>Iris-Masked Periocular Transformer <span class="model-arch">(ViT-B/16 + MAE, ViTbackend)</span></span>
+                            </li>
+                        </ul>
+                        <button class="proto-select-btn proto-select-btn--b" id="protoBBtn">
+                            Launch Prototype B
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
+                                <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- ===== PAGE 1: Upload ===== -->
+            <section class="upload-section" id="uploadSection" style="display:none;">
+                <div class="upload-card">
+                    <div class="upload-topbar">
+                        <button class="back-link" id="backToLandingFromUpload">
+                            <svg viewBox="0 0 20 20" fill="currentColor" width="14" height="14">
+                                <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                            </svg>
+                            Back to selection
+                        </button>
+                        <span class="active-proto-label" id="activeProtoLabel"></span>
+                    </div>
+
+                    <!-- Upload Zone -->
+                    <div class="upload-zone" id="uploadZone">
+                        <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                        <div class="upload-icon">
+                            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M32 44V20M32 20L22 30M32 20L42 30" stroke="currentColor" stroke-width="2.5"
+                                    stroke-linecap="round" stroke-linejoin="round" />
+                                <path d="M12 40V48C12 50.2 13.8 52 16 52H48C50.2 52 52 50.2 52 48V40"
+                                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" />
+                            </svg>
+                        </div>
+                        <h2>Upload Eyelid Images</h2>
+                        <p>Drag &amp; drop images here, or <span class="browse-link">browse files</span></p>
+                        <p class="upload-hint">Supports: JPG, PNG, BMP, TIFF, WebP &bull; Max 10MB per file</p>
+                    </div>
+
+                    <!-- Image Previews -->
+                    <div class="preview-container" id="previewContainer">
+                        <div class="multi-preview-grid" id="multiPreviewGrid"></div>
+                        <p class="file-count" id="fileCountText"></p>
+                    </div>
+
+                    <!-- Analyse button -->
+                    <div class="analyse-row">
+                        <button class="analyse-btn" id="analyseBtn" disabled>
+                            <span class="btn-text">Analyse Images</span>
+                            <span class="btn-loader">
+                                <span class="spinner"></span>
+                                Analysing&hellip;
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== PAGE 2: Results ===== -->
+            <section class="results-gallery-section" id="resultsGallerySection">
+                <div class="gallery-header">
+                    <h2 class="results-title">Prediction Results</h2>
+                    <p id="batchStatusText"></p>
+                </div>
+                <div class="results-grid" id="resultsGrid"></div>
+
+                <!-- metrics summary injected here by script.js -->
+                <div id="metricsSummary"></div>
+
+                <div class="gallery-actions">
+                    <button class="action-btn secondary-btn" id="backToLandingBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" width="18" height="18">
+                            <polyline points="15 18 9 12 15 6" />
+                        </svg>
+                        Change Prototype
+                    </button>
+                    <button class="action-btn primary-btn" id="galleryNewBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" width="18" height="18">
+                            <polyline points="1 4 1 10 7 10" />
+                            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                        </svg>
+                        Analyse new images
+                    </button>
+                </div>
+            </section>
+
+
+        </div>
+    </main>
+
+    <footer>
+        <p>Prof. Khurshid Ahmad &bull; Trinity College Dublin &bull; School of Computer Science &amp; Statistics</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
