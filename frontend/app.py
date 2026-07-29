@@ -5,7 +5,7 @@ Serves the shared frontend and routes predictions to whichever model the user se
 Models loaded at startup:
   jay_cnn          — ResNet-18 CNN  (backend_jay)
   mark_cnn         — ResNet-152 CNN (backend_mark_system)
-  aparna_vit       — ViT-B/16 MAE unmasked (backend_Aparna_ViT) — ablation baseline
+  aparna_vit       — ViT-B/16 MAE unmasked (ViTbackend/unmasked) — ablation baseline
   aparna_vit_masked — ViT-B/16 MAE iris-masked (ViTbackend)  — improved model
 
 POST /predict  { file, model_type: "jay_cnn"|"mark_cnn"|"aparna_vit"|"aparna_vit_masked" }
@@ -36,20 +36,16 @@ BASE_DIR = Path(__file__).parent        # .../frontend/
 REPO_DIR = BASE_DIR.parent             # .../ViT-implementation/
 STATIC_DIR = BASE_DIR / "static"
 
-APARNA_SRC    = REPO_DIR / "backend_Aparna_ViT"
 NEW_VIT_SRC   = REPO_DIR / "ViTbackend"
 JAY_MODEL     = REPO_DIR / "backend_jay" / "Pipeline" / "GrabCut" / "saved_models" / "cnn_b.pth"
 MARK_MODEL    = REPO_DIR / "backend_mark_system" / "model" / "final_model.pth"
-APARNA_MODEL  = APARNA_SRC / "outputs" / "aspect_fix_only_no_iris_mask" / "best_classifier.pt"
+APARNA_MODEL  = NEW_VIT_SRC / "outputs" / "vit_finetuned_unmasked.pth"
 MASKED_MODEL  = NEW_VIT_SRC / "outputs" / "vit_finetuned_masked.pth"
 
-# Shared architecture classes come from backend_Aparna_ViT
-sys.path.insert(0, str(APARNA_SRC))
+# Shared architecture classes + iris_masking all live in ViTbackend
+sys.path.insert(0, str(NEW_VIT_SRC))
 from finetune import FineTuneModel, MLPHead          # noqa: E402
 from gmar import ViTGMAR, overlay_cam_on_image       # noqa: E402
-
-# iris_masking lives in ViTbackend
-sys.path.insert(0, str(NEW_VIT_SRC))
 from iris_masking import mask_iris                   # noqa: E402
 
 # ── Device ──────────────────────────────────────────────────────────────────────
