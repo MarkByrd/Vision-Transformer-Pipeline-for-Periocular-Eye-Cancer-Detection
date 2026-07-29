@@ -7,8 +7,8 @@ unified web app:
 
 | Prototype | Models | Author | Source |
 |---|---|---|---|
-| **A — Dual CNN Analysis** | ResNet-18 ("Tumour Locator") + ResNet-152 ("Periocular Analysis") | Jay Birthariya / Mark Byrd | `backend_jay/`, `backend_mark_system/` |
-| **B — Periocular Transformer** | ViT-B/16, MAE-pretrained — baseline (unmasked) + iris-masked variant | Aparna | `ViTbackend/` |
+| **A - Dual CNN Analysis** | ResNet-18 ("Tumour Locator") + ResNet-152 ("Periocular Analysis") | Jay Birthariya / Mark Byrd | `backend_jay/`, `backend_mark_system/` |
+| **B - Periocular Transformer** | ViT-B/16, MAE-pretrained — baseline (unmasked) + iris-masked variant | Aparna | `ViTbackend/` |
 
 Both prototypes are reachable from one page, with Grad-CAM (CNNs) or GMAR attention-rollout
 (ViTs) heatmaps overlaid on every prediction.
@@ -26,8 +26,7 @@ process.
 frontend/app.py  (single process, http://localhost:8000)
  ├── imports ResNet-18 arch from backend_jay/           → loads backend_jay/Pipeline/GrabCut/saved_models/cnn_b.pth
  ├── imports ResNet-152 arch from backend_mark_system/  → loads backend_mark_system/model/final_model.pth
- └── imports ViT-B/16 arch from ViTbackend/              → loads ViTbackend/outputs/vit_finetuned_unmasked.pth
-                                                          → loads ViTbackend/outputs/vit_finetuned_masked.pth
+ └── imports ViT-B/16 arch from ViTbackend/              → loads ViTbackend/outputs/vit_finetuned_unmasked.pth and ViTbackend/outputs/vit_finetuned_masked.pth
 ```
 
 `ViTbackend/` is self-contained for both ViT variants:
