@@ -1,17 +1,3 @@
-"""
-Unified Eyelid Cancer Classification Backend
-Serves the shared frontend and routes predictions to whichever model the user selects.
-
-Models loaded at startup:
-  jay_cnn          — ResNet-18 CNN  (backend_jay)
-  mark_cnn         — ResNet-152 CNN (backend_mark_system)
-  aparna_vit       — ViT-B/16 MAE unmasked (ViTbackend/unmasked) — ablation baseline
-  aparna_vit_masked — ViT-B/16 MAE iris-masked (ViTbackend)  — improved model
-
-POST /predict  { file, model_type: "jay_cnn"|"mark_cnn"|"aparna_vit"|"aparna_vit_masked" }
-Response       { prediction, confidence, model, original_image, heatmap | null }
-"""
-
 import base64
 import io
 import math
