@@ -1,0 +1,39 @@
+[project]
+name = "eyelid-cancer-app"
+version = "0.1.0"
+description = "Local web app for the iris-masked ViT-B/16 eyelid cancer classifier, with GMAR heatmaps and geometric landmark analysis."
+readme = "README.md"
+# mediapipe 0.10.13 ships wheels up to Python 3.12.
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    # Model stack: pinned to the versions the checkpoint was trained/verified with.
+    "torch==2.5.1",
+    "torchvision==0.20.1",
+    "timm==1.0.26",
+    "mediapipe==0.10.13",
+    # mediapipe already requires opencv-contrib-python; don't also add opencv-python,
+    # both install the same cv2 module and overwrite each other.
+    "opencv-contrib-python==4.11.0.86",
+    # mediapipe 0.10.13 predates NumPy 2.
+    "numpy>=1.26,<2",
+    "pillow>=10",
+    # Web server
+    "fastapi>=0.115,<0.116",
+    "uvicorn>=0.30,<0.31",
+    "python-multipart>=0.0.9",
+]
+
+[tool.uv]
+# This is an application run with `uv run main.py`, not an installable package.
+package = false
+
+# Inference runs fine on CPU. On Linux, PyPI's torch bundles ~2.5 GB of CUDA libraries,
+# so take the CPU-only build there. Windows (CPU) and macOS (Apple GPU via MPS) use PyPI.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

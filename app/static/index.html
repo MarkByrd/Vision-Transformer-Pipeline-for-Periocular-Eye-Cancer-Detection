@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eyelid Cancer Detection</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <header>
+        <svg class="logo" viewBox="0 0 48 48" fill="none" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" stroke="url(#g)" stroke-width="2.5"/>
+            <ellipse cx="24" cy="24" rx="14" ry="9" stroke="url(#g)" stroke-width="2"/>
+            <circle cx="24" cy="24" r="5" fill="url(#g)"/>
+            <defs>
+                <linearGradient id="g" x1="0" y1="0" x2="48" y2="48">
+                    <stop offset="0%" stop-color="#6ee7b7"/>
+                    <stop offset="100%" stop-color="#3b82f6"/>
+                </linearGradient>
+            </defs>
+        </svg>
+        <h1>Eyelid Cancer Detection</h1>
+        <span class="status" id="status">Loading model&hellip;</span>
+    </header>
+
+    <main>
+        <div class="banner" id="banner" hidden></div>
+
+        <section id="uploadSection">
+            <label class="drop-zone" id="dropZone">
+                <input type="file" id="fileInput" accept=".jpg,.jpeg,.png,.bmp,.tif,.tiff,.webp" multiple hidden>
+                <svg viewBox="0 0 64 64" fill="none" aria-hidden="true">
+                    <path d="M32 44V20M32 20L22 30M32 20L42 30" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 40V48C12 50.2 13.8 52 16 52H48C50.2 52 52 50.2 52 48V40" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h2>Upload eyelid images</h2>
+                <p>Drag &amp; drop images here, or <span class="link">browse files</span></p>
+                <p class="hint">JPG, PNG, BMP, TIFF or WebP &bull; up to 10 MB each</p>
+            </label>
+
+            <div class="selection" id="selection" hidden>
+                <div class="thumbs" id="thumbs"></div>
+                <div class="actions">
+                    <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+                    <button class="btn primary" id="analyseBtn" type="button">Analyse</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="resultsSection" hidden>
+            <div class="results-head">
+                <p id="progress"></p>
+                <button class="btn primary" id="newBtn" type="button">Analyse new images</button>
+            </div>
+            <div id="results"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Research prototype &mdash; not a medical device and not for clinical diagnosis.</p>
+        <p>Iris-masked ViT-B/16 (MAE-pretrained) &bull; Trinity College Dublin, School of Computer Science &amp; Statistics</p>
+    </footer>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>

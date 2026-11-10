@@ -12,7 +12,8 @@ self-contained for **two** ablation variants:
 
 Both variants share the same `FineTuneModel` / `MLPHead` / `ViTGMAR` classes (defined in
 `finetune.py` and `gmar.py` at the top level) - they only differ in which dataset pipeline
-produced the checkpoint. This is also what `frontend/app.py` imports to serve both models.
+produced the checkpoint. The app in `../app/` keeps its own copy of these classes and of
+`iris_masking.py`, so it serves the iris-masked checkpoint without importing this folder.
 
 Run everything below from **inside the directory that contains the script** (`ViTbackend/`
 or `ViTbackend/unmasked/`) — all default paths are relative to that location.
@@ -136,13 +137,9 @@ sensitivity / specificity plus a per-image prediction table.
 
 ---
 
-## Serving both models from the unified frontend
+## Serving the model in the app
 
-`frontend/app.py` loads whichever checkpoints exist at:
-
-```
-ViTbackend/outputs/vit_finetuned_masked.pth      # iris-masked
-ViTbackend/outputs/vit_finetuned_unmasked.pth     # unmasked baseline (copy your trained
-                                                   #  outputs/freeze7/best_classifier.pt here)
-```
+The app (`../app/`) serves only the iris-masked model and picks up
+`outputs/vit_finetuned_masked.pth` from here automatically — see `../app/README.md`. If you change `iris_masking.py`, `finetune.py`'s model classes or
+`gmar.py`, update the copies in `../app/` to match.
 

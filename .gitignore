@@ -1,8 +1,8 @@
 # Ignore everything at the root by default; this repo only tracks
-# ViTbackend/ and frontend/ out of the larger dissertation workspace.
+# ViTbackend/ and app/ out of the larger dissertation workspace.
 /*
 !/ViTbackend/
-!/frontend/
+!/app/
 !/.gitignore
 !/README.md
 
@@ -10,6 +10,7 @@
 ViTbackend/__pycache__/
 ViTbackend/outputs/*.pth
 ViTbackend/masking_failures.log
-frontend/__pycache__/
+app/models/*.pth
+.venv/
 **/__pycache__/
 *.pyc
