@@ -39,7 +39,9 @@ the iris-masking code, and needs only the trained checkpoint.
 3. Open **http://127.0.0.1:8000**, upload one or more eyelid images, and click **Analyse**.
    Each result shows the prediction and confidence, the iris-masked image the model saw,
    a GMAR attention heatmap, and a geometric landmark analysis (iris, eye corners, eyelid
-   margins, lesion box and their measurements).
+   margins, lesion box and their measurements). Below each result are the Evaluation,
+   Image Annotation and Medical Assessment sections; **Save Evaluation** stores one record
+   per image. Set `GAOIS_DATA_DIR` to a restricted folder for the hospital evaluation.
 
 See [`app/README.md`](app/README.md) for details and the API.
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GAOIS - Eyelid Cancer Detection</title>
+    <title>GAOIS &ndash; Eyelid Cancer Detection</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -19,7 +19,7 @@
                 </linearGradient>
             </defs>
         </svg>
-        <h1>GOAIS - Eyelid Cancer Detection</h1>
+        <h1>GAOIS &ndash; Eyelid Cancer Detection</h1>
         <span class="status" id="status">Loading model&hellip;</span>
     </header>
 
@@ -50,9 +50,17 @@
         <section id="resultsSection" hidden>
             <div class="results-head">
                 <p id="progress"></p>
-                <button class="btn primary" id="newBtn" type="button">Analyse new images</button>
+                <button class="btn secondary" id="startOverBtn" type="button">Start over</button>
             </div>
             <div id="results"></div>
+
+            <div class="save-bar" id="saveBar" hidden>
+                <div id="saveMessage" class="save-message" role="status" aria-live="polite"></div>
+                <div class="actions">
+                    <button class="btn primary" id="saveBtn" type="button">Save Evaluation</button>
+                    <button class="btn primary" id="nextBtn" type="button" hidden>Next Evaluation</button>
+                </div>
+            </div>
         </section>
     </main>
 
@@ -61,6 +69,7 @@
         <p>Trinity College Dublin, School of Computer Science &amp; Statistics</p>
     </footer>
 
+    <script src="/static/annotator.js"></script>
     <script src="/static/script.js"></script>
 </body>
 </html>

@@ -11,6 +11,8 @@ ViTbackend/__pycache__/
 ViTbackend/outputs/*.pth
 ViTbackend/masking_failures.log
 app/models/*.pth
+# Evaluation records contain patient images: never commit them.
+app/evaluations/
 .venv/
 **/__pycache__/
 *.pyc

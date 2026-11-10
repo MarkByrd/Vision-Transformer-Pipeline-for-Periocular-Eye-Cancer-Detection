@@ -1,12 +1,15 @@
 """
-Eyelid cancer classifier: local web app for the iris-masked ViT-B/16 model.
+GAOIS - Eyelid Cancer Detection: local web app for the Iris-Masked Periocular
+Transformer (ViT-B/16), with geometric landmark analysis and clinical evaluation
+records.
 
-    python main.py            # then open http://127.0.0.1:8000
+    uv run main.py            # then open http://127.0.0.1:8000
 
 Environment variables:
-    EYELID_MODEL   path to the checkpoint (default: first vit_finetuned_masked.pth
-                   found in MODEL_SEARCH_DIRS below)
-    PORT           port to listen on (default: 8000)
+    EYELID_MODEL     path to the checkpoint (default: first vit_finetuned_masked.pth
+                     found in MODEL_SEARCH_DIRS below)
+    GAOIS_DATA_DIR   where evaluation records are saved (default: app/evaluations/)
+    PORT             port to listen on (default: 8000)
 """
 
 import base64
@@ -17,15 +20,19 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from PIL import Image
+from pydantic import ValidationError
 
+from evaluations import EvaluationIn, ensure_data_dir, save_evaluation
 from inference import Classifier, pick_device
 from landmarks import run_landmark_analysis
 
+MODEL_NAME = "Iris-Masked Periocular Transformer"
 APP_DIR = Path(__file__).resolve().parent
+DATA_DIR = Path(os.environ.get("GAOIS_DATA_DIR", APP_DIR / "evaluations"))
 STATIC_DIR = APP_DIR / "static"
 MODEL_FILE = "vit_finetuned_masked.pth"
 MODEL_SEARCH_DIRS = [
@@ -58,6 +65,8 @@ async def lifespan(_app: FastAPI):
     global classifier, load_error
     device = pick_device()
     print(f"Device: {device}")
+    ensure_data_dir(DATA_DIR)
+    print(f"Evaluation records: {DATA_DIR}")
     if not MODEL_PATH.exists():
         load_error = f"Model checkpoint not found: {MODEL_PATH}"
         print(f"[!] {load_error}")
@@ -119,6 +128,7 @@ def predict(file: UploadFile = File(...)):
         raise HTTPException(503, load_error or "Model is not loaded.")
     result = classifier.predict(read_image(file))
     return {
+        "model": MODEL_NAME,
         "prediction": result["prediction"],
         "confidence": result["confidence"],
         "probability_malignant": result["probability_malignant"],
@@ -127,6 +137,53 @@ def predict(file: UploadFile = File(...)):
         "masked_image": encode_jpeg(result["masked"]),
         "heatmap": encode_jpeg(result["heatmap"]),
     }
+
+
+def read_limited(file: UploadFile, limit: int, label: str) -> bytes:
+    data = file.file.read(limit + 1)
+    if len(data) > limit:
+        raise HTTPException(400, f"{label} is too large.")
+    return data
+
+
+@app.post("/api/evaluations")
+def create_evaluation(
+    record: str = Form(...),
+    original: UploadFile = File(...),
+    gmar: UploadFile = File(...),
+    annotated: UploadFile | None = File(None),
+):
+    """Save one evaluation record: the form fields as JSON plus the three images."""
+    try:
+        evaluation = EvaluationIn.model_validate_json(record)
+    except ValidationError as e:
+        problems = "; ".join(
+            f"{'.'.join(str(p) for p in err['loc'])}: {err['msg']}" for err in e.errors()
+        )
+        raise HTTPException(422, f"Invalid evaluation: {problems}")
+
+    ext = Path(original.filename or "").suffix.lower()
+    if ext not in ALLOWED_EXTENSIONS:
+        raise HTTPException(400, f"Unsupported original image type '{ext}'.")
+    original_bytes = read_limited(original, MAX_FILE_SIZE, "Original image")
+
+    gmar_bytes = read_limited(gmar, 5 * 1024 * 1024, "GMAR image")
+    if not gmar_bytes.startswith(b"\xff\xd8"):
+        raise HTTPException(400, "GMAR image must be a JPEG.")
+
+    annotated_bytes = None
+    if annotated is not None:
+        annotated_bytes = read_limited(annotated, 40 * 1024 * 1024, "Annotated image")
+        if not annotated_bytes.startswith(b"\x89PNG"):
+            raise HTTPException(400, "Annotated image must be a PNG.")
+
+    try:
+        return save_evaluation(
+            DATA_DIR, evaluation, MODEL_PATH.name,
+            (original_bytes, ext), gmar_bytes, annotated_bytes,
+        )
+    except OSError as e:
+        raise HTTPException(500, f"Could not write the evaluation record: {e}")
 
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
